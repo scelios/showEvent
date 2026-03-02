@@ -69,7 +69,7 @@
 
 <script>
 export default {
-    
+
     props: {
         resource: {
             type: Object,
@@ -128,7 +128,6 @@ export default {
         async fetchEvents() {
             this.isLoading = true;
             this.errorMessage = '';
-            
             try {
                 const allEvents = await this.$store.dispatch('cluster/findAll', { type: 'event' });
 

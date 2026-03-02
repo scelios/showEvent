@@ -1,15 +1,11 @@
 {
-  "name": "ui-plugin-examples",
-  "version": "0.2.0",
+  "name": "ui-plugin",
+  "version": "0.1.0",
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
-    "@rancher/shell": "3.0.8-rc.13",
-    "cache-loader": "^4.1.0",
-    "color": "4.2.3",
-    "ip": "2.0.1",
-    "node-polyfill-webpack-plugin": "^3.0.0"
+    "@rancher/shell": "^3.0.8"
   },
   "resolutions": {
     "@types/node": "~20.10.0",

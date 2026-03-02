@@ -1,6 +1,5 @@
 import { importTypes } from '@rancher/auto-import';
 import { IPlugin, CardLocation, TabLocation, PanelLocation, ActionLocation, ActionOpts} from '@shell/core/types';
-import { useShell } from '@shell/apis';
 import fileToRender from './components/showEvent.vue';
 
 // Init the package
@@ -10,48 +9,70 @@ export default function(plugin: IPlugin): void {
   // Provide plugin metadata from package.json
   plugin.metadata = require('./package.json');
 
-  plugin.addAction(
-  ActionLocation.TABLE,
-  {  }, 
-  {
-    label:    'Show Event',
-    icon:     'icon-show',
-    enabled(ctx: any) {
-      return true;
-    },
-    invoke(opts: ActionOpts, values: any[]) {
-      // const router = (window as any).$nuxt?.$router; // Try accessing global nuxt router
-      
-      // if (router) {
-      //   router.push({ path: '/home' });
-      // }
-      // else
-      // {
-      //   console.error("Could not find router instance", (window as any).$nuxt);
-      // }
-
-
-      const shell = (window as any).$globalApp?.$shell;
-
-      if (shell) {
-        // console.log("Name of the resource:", values[0]?.metadata?.name);
-        // if (values[0]?.metadata?.name.includes('.')) {
-        //   //remove the part after the dot, which is the namespace
-        //   values[0].metadata.name = values[0].metadata.name.split('.')[0];
-        // }
-        shell.slideIn.open(fileToRender, {
-          // Some versions of shell/nuxt might flatten props, so let's try passing it directly in the object
-          // AND nested in props just in case.
-          resource: values[0], 
-          props: { resource: values[0] },
-          title: 'Show Event',
-          width: '80%'
-        });
-      } else {
-        console.error("Could not find shell instance");
-      }
-    }
-  }
+//   plugin.addAction(
+//   ActionLocation.TABLE,
+//   {  }, 
+//   {
+//     label:    'Show Event',
+//     icon:     'icon-show',
+//     enabled(ctx: any) {
+//       return true;
+//     },
+//     invoke(opts: ActionOpts, values: any[], globals: any) {
+//       // render the fileToRender component
+//       const shell = (window as any).$globalApp?.$shell;
+//       if (shell?.slideIn) {
+//         shell.slideIn.open(fileToRender, {
+//           props: { resource: values[0] },
+//           title: 'Show Event',
+//           width: '80%'
+//         });
+//       } else {
+//         console.error("Could not find shell instance to open slide-in", shell);
+//       }
+//     }
+//   }
+// );
+//   plugin.addTab( 
+//   TabLocation.RESOURCE_SHOW_CONFIGURATION,
+//   {  }, 
+//   {
+//     name:       'show',
+//     labelKey:   'plugin-examples.tab-label',
+//     label:      'some-label',
+//     weight:     -5,
+//     showHeader: true,
+//     tooltip:    'this is a tooltip message',
+//     component:  () => import('./components/showEvent.vue')
+//   }
+// );
+//   plugin.addTab( 
+//     TabLocation.RESOURCE_DETAIL_PAGE,
+//     {  }, 
+//     {
+//       name:       'resource-detail-page',
+//       labelKey:   'plugin-examples.tab-label',
+//       label:      'some-label',
+//       weight:     -5,
+//       showHeader: true,
+//       tooltip:    'this is a tooltip message',
+//       component:  () => import('./components/showEvent.vue')
+//     }
+//   );
+//   plugin.addCard(
+//   CardLocation.CLUSTER_DASHBOARD_CARD,
+//   { },
+//   {
+//     label:     'some-label',
+//     labelKey:  'generic.comingSoon',
+//     component: () => import('./components/showEvent.vue')
+//   }
+// );
+plugin.addPanel(
+  PanelLocation.DETAIL_TOP,
+  { },
+  { component: () => import('./components/showEvent.vue') }
 );
+  // plugin.addProduct(require('./product'));
   plugin.metadata.icon = require('./eyes.svg');
 }
