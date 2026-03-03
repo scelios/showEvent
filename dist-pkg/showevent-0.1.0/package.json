@@ -1,19 +1,19 @@
 {
-  "name": "showEvent",
+  "name": "showevent",
   "description": "Help you see easily the events of a resource",
   "version": "0.1.0",
   "private": false,
   "rancher": true,
   "engines": {
-    "node": ">=12"
+    "node": ">=16"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "4.5.18",
-    "@vue/cli-service": "4.5.18",
-    "@vue/cli-plugin-typescript": "4.5.18"
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/cli-plugin-typescript": "~5.0.0"
   },
   "files": [
     "**/*"
   ],
-  "main": "showEvent-0.1.0.umd.min.js"
+  "main": "showevent-0.1.0.umd.min.js"
 }
