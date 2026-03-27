@@ -12,9 +12,9 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-03-27T11:43:50.763709112+01:00"
+    created: "2026-03-27T14:02:54.655189841+01:00"
     description: linkedressources plugin
-    digest: 34c123fb39607e2e2c8032b3f7270d606a7db47c21d0017416177ba9711edbc3
+    digest: f590f16b6853f8eacc1d3034ea040fb7ae4e0ca12c2650fff37a3e34756650ab
     name: linkedressources
     type: application
     urls:
@@ -32,9 +32,9 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-03-27T11:43:50.764073841+01:00"
+    created: "2026-03-27T14:02:54.65547348+01:00"
     description: profilepictures plugin
-    digest: b222641d1b6addf2f6665162383313552e40d1865a14b986a81ece7ca466ed20
+    digest: 1b664e596a308783a1dd7f5811024652a3653dd238c45f3e09b8505f2b7d10dd
     name: profilepictures
     type: application
     urls:
@@ -52,9 +52,9 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.1
-    created: "2026-03-27T11:43:50.764548245+01:00"
+    created: "2026-03-27T14:02:54.655733818+01:00"
     description: Help you see easily the events of a resource
-    digest: feb82069f28062ce5e20c042bbc3b331c4c7d396b149bdc7e70ad7d836f6817d
+    digest: f506508960cef33fc9a5fb67bce7ae033727a10bc57c933febe77d7052ca42fc
     icon: https://www.svgrepo.com/show/530400/browse.svg
     name: showevent
     type: application
@@ -82,4 +82,4 @@ entries:
     urls:
     - plugin/showevents/showevents-0.1.1.tgz
     version: 0.1.1
-generated: "2026-03-27T11:43:50.763028363+01:00"
+generated: "2026-03-27T14:02:54.654749284+01:00"
