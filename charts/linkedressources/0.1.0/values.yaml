@@ -4,9 +4,9 @@ plugin:
   enabled: true
   versionOverride: ""
   endpoint: >-
-    https://raw.githubusercontent.com/https://github.com/scelios/showEvent.git/main/extensions/linkedressources/0.1.0
+    https://raw.githubusercontent.com/scelios/showEvent/gh-pages/extensions/linkedressources/0.1.0
   compressedEndpoint: >-
-    https://raw.githubusercontent.com/https://github.com/scelios/showEvent.git/main/extensions/linkedressources/0.1.0.tgz
+    https://raw.githubusercontent.com/scelios/showEvent/gh-pages/extensions/linkedressources/0.1.0.tgz
   noCache: false
   noAuth: false
   metadata:
