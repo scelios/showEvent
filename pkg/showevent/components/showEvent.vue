@@ -1,70 +1,115 @@
 <template>
-    <div class="extension-container">
-        <!-- Dynamic Title -->
-        <h1>Events for {{ resourceKind }}: {{ resourceName }}</h1>
+  <div class="extension-container">
+    <!-- Dynamic Title -->
+    <h1>Events for {{ resourceKind }}: {{ resourceName }}</h1>
         
-        <div v-if="isLoading">Loading events...</div>
-        
-        <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
-        
-        <div v-else-if="events.length === 0">No events found for this resource.</div>
-        <table v-else class="event-table">
-            <thead>
-                <tr>
-                    <th @click="sortBy('date')" style="cursor: pointer">
-                        Last Seen
-                        <span class="sort-icon" :class="{ active: sortKey === 'date' }">
-                            {{ sortKey === 'date' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅' }}
-                        </span>
-                    </th>
-                    <th @click="sortBy('type')" style="cursor: pointer">
-                        Type
-                        <span class="sort-icon" :class="{ active: sortKey === 'type' }">
-                            {{ sortKey === 'type' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅' }}
-                        </span>
-                    </th>
-                    <th @click="sortBy('reason')" style="cursor: pointer">
-                        Reason
-                        <span class="sort-icon" :class="{ active: sortKey === 'reason' }">
-                            {{ sortKey === 'reason' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅' }}
-                        </span>
-                    </th>
-                    <th @click="sortBy('name')" style="cursor: pointer">
-                        Resource Name 
-                        <span class="sort-icon" :class="{ active: sortKey === 'name' }">
-                            {{ sortKey === 'name' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅' }}
-                        </span>
-                    </th>
-                    <th @click="sortBy('description')" style="cursor: pointer">
-                        Message
-                        <span class="sort-icon" :class="{ active: sortKey === 'description' }">
-                            {{ sortKey === 'description' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅' }}
-                        </span>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(event, index) in sortedEvents" :key="event.id || index">
-                    <td>{{ event.date }}</td>
-                    <td>
-                        <span :class="{'text-danger': event.type === 'Warning'}">
-                            {{ event.type }}
-                        </span>
-                    </td>
-                    <td>{{ event.reason }}</td>
-                    <td>
-                        <b>{{ event.kind }}</b>: {{ event.name }}
-                    </td>
-                    <td>
-                        <span :class="{'text-danger': event.type === 'Warning'}">
-                            [{{ event.reason }}]
-                        </span> 
-                        {{ event.description }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div v-if="isLoading">
+      Loading events...
     </div>
+        
+    <div
+      v-else-if="errorMessage"
+      class="error"
+    >
+      {{ errorMessage }}
+    </div>
+        
+    <div v-else-if="events.length === 0">
+      No events found for this resource.
+    </div>
+    <table
+      v-else
+      class="event-table"
+    >
+      <thead>
+        <tr>
+          <th
+            style="cursor: pointer"
+            @click="sortBy('date')"
+          >
+            Last Seen
+            <span
+              class="sort-icon"
+              :class="{ active: sortKey === 'date' }"
+            >
+              {{ sortKey === 'date' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅' }}
+            </span>
+          </th>
+          <th
+            style="cursor: pointer"
+            @click="sortBy('type')"
+          >
+            Type
+            <span
+              class="sort-icon"
+              :class="{ active: sortKey === 'type' }"
+            >
+              {{ sortKey === 'type' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅' }}
+            </span>
+          </th>
+          <th
+            style="cursor: pointer"
+            @click="sortBy('reason')"
+          >
+            Reason
+            <span
+              class="sort-icon"
+              :class="{ active: sortKey === 'reason' }"
+            >
+              {{ sortKey === 'reason' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅' }}
+            </span>
+          </th>
+          <th
+            style="cursor: pointer"
+            @click="sortBy('name')"
+          >
+            Resource Name 
+            <span
+              class="sort-icon"
+              :class="{ active: sortKey === 'name' }"
+            >
+              {{ sortKey === 'name' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅' }}
+            </span>
+          </th>
+          <th
+            style="cursor: pointer"
+            @click="sortBy('description')"
+          >
+            Message
+            <span
+              class="sort-icon"
+              :class="{ active: sortKey === 'description' }"
+            >
+              {{ sortKey === 'description' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅' }}
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(event, index) in sortedEvents"
+          :key="event.id || index"
+        >
+          <td>{{ event.date }}</td>
+          <td>
+            <span :class="{'text-danger': event.type === 'Warning'}">
+              {{ event.type }}
+            </span>
+          </td>
+          <td>{{ event.reason }}</td>
+          <td>
+            <b>{{ event.kind }}</b>: {{ event.name }}
+          </td>
+          <td>
+            <span :class="{'text-danger': event.type === 'Warning'}">
+              [{{ event.reason }}]
+            </span> 
+            {{ event.description }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
@@ -112,15 +157,15 @@ export default {
         }
     },
 
-    async mounted() {
-        await this.fetchEvents();
-    },
-
     // Re-fetch if the user creates a new event or switches tabs
     watch: {
         resource() {
             this.fetchEvents();
         }
+    },
+
+    async mounted() {
+        await this.fetchEvents();
     },
 
     methods: {

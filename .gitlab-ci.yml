@@ -1,29 +1,42 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
-stages:
-- build
-- test
-- deploy
-- review
-- dast
-- staging
-- canary
-- production
-- incremental rollout 10%
-- incremental rollout 25%
-- incremental rollout 50%
-- incremental rollout 100%
-- performance
-- cleanup
-- secret-detection
+default:
+  tags:
+   - k8sv3
+   - mtMC
+   - stg
+  image:
+      name: jfrog-artifactory.steelhome.internal/docker/node:22.17.0
 variables:
-  SECRET_DETECTION_ENABLED: 'true'
-secret_detection:
-  stage: secret-detection
+  NODE_OPTIONS: "--max-old-space-size=1536"
+  KUBERNETES_CPU_REQUEST: 300m
+  KUBERNETES_CPU_LIMIT: 2000m
+  KUBERNETES_MEMORY_REQUEST: 512Mi
+  KUBERNETES_MEMORY_LIMIT: 2Gi
+  FORCE_RUN_AS: master
+
 include:
-- template: Auto-DevOps.gitlab-ci.yml
+  - project: "mtmc/projects/it-factory/piplib"
+    ref: develop
+    file: "/pipelines/npm/npm.gitlab-ci.yml"
+
+
+build:
+  needs: ["prepare"]
+  before_script:
+  - yarn cache clean 
+  - rm -rf node_modules 
+  - yarn install
+  - wget https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64 -O /usr/local/bin/jq && chmod +x /usr/local/bin/jq
+  - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq && chmod +x /usr/local/bin/yq
+  - curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  artifacts:
+    untracked: false
+    when: on_success
+    access: all
+    expire_in: 30 days
+    paths:
+    - tmp
+
+
+package-chart:
+  rules: 
+    - when: never

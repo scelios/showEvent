@@ -1,9 +1,8 @@
 {
-  "name": "showevent",
-  "description": "Help you see easily the events of a resource",
-  "version": "0.1.1",
+  "name": "linkedressources",
+  "description": "linkedressources plugin",
+  "version": "0.1.0",
   "private": false,
-  "icon": "https://www.svgrepo.com/show/530400/browse.svg",
   "rancher": {
     "annotations": {
       "catalog.cattle.io/rancher-version": ">= 2.10.0",

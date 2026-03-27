@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "resolveJsonModule": true,
     "allowJs": true,
     "target": "esnext",
     "module": "esnext",
+    "resolveJsonModule": true,
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
@@ -47,7 +47,7 @@
     "**/*.d.ts",
     "**/*.tsx",
     "**/*.vue"
-  ],
+, "../profilepictures/components/avatarInstaller.ts"  ],
   "exclude": [
     "../../node_modules"
   ]

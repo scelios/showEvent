@@ -1,8 +1,12 @@
+assets/
+*Identifier
 # compiled output
+extensions
+assets
+charts
 /dist
 /tmp
 /out-tsc
-
 # Runtime data
 pids
 *.pid
@@ -68,3 +72,6 @@ jspm_packages/
 # System Files
 .DS_Store
 Thumbs.db
+
+# Locally built assets (extensions)
+dist-pkg
