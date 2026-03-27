@@ -1,6 +1,6 @@
 apiVersion: v1
 entries:
-  showevent:
+  linkedressources:
   - annotations:
       catalog.cattle.io/certified: rancher
       catalog.cattle.io/namespace: cattle-ui-plugin-system
@@ -12,12 +12,33 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-03-27T09:50:58.176782482Z"
-    description: Help you see easily the events of a resource
-    digest: 8925c46342d30007490a915cc31132c7d94d4627f0b051ff3b0ae785d0d843d5
-    name: showevent
+    created: "2026-03-27T10:02:49.140763066Z"
+    description: linkedressources plugin
+    digest: 231ea058a04988cbc3879daa64d1ff3a8c2ef0e3eee9eaeaa58a86dc28cbc0a3
+    name: linkedressources
     type: application
     urls:
-    - assets/showevent/showevent-0.1.0.tgz
+    - assets/linkedressources/linkedressources-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-27T09:50:58.176288208Z"
+  showevents:
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.10.0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+      catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
+    apiVersion: v2
+    appVersion: 0.1.1
+    created: "2026-03-12T17:06:28.510507216Z"
+    description: Help you see easily the events of a resource
+    digest: 38904fb9d266ce06aab7b48f98efb629aeb3a9f3b169e8b41e5d720d9fe8e861
+    icon: https://www.svgrepo.com/show/530400/browse.svg
+    name: showevents
+    type: application
+    urls:
+    - plugin/showevents/showevents-0.1.1.tgz
+    version: 0.1.1
+generated: "2026-03-27T10:02:49.140345387Z"
