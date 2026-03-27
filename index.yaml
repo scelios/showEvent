@@ -12,9 +12,9 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-03-27T10:02:49.140763066Z"
+    created: "2026-03-27T10:05:10.070454799Z"
     description: linkedressources plugin
-    digest: 231ea058a04988cbc3879daa64d1ff3a8c2ef0e3eee9eaeaa58a86dc28cbc0a3
+    digest: 9ad155e1d341e47db1666802fca91978a5257620d546dedff8b4abfd7dcc627c
     name: linkedressources
     type: application
     urls:
@@ -41,4 +41,4 @@ entries:
     urls:
     - plugin/showevents/showevents-0.1.1.tgz
     version: 0.1.1
-generated: "2026-03-27T10:02:49.140345387Z"
+generated: "2026-03-27T10:05:10.070104566Z"
