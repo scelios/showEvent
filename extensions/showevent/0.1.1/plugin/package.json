@@ -1,0 +1,20 @@
+{
+  "name": "showevent",
+  "description": "Help you see easily the events of a resource",
+  "version": "0.1.1",
+  "private": false,
+  "icon": "https://www.svgrepo.com/show/530400/browse.svg",
+  "rancher": true,
+  "engines": {
+    "node": ">=16"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/cli-plugin-typescript": "~5.0.0"
+  },
+  "files": [
+    "**/*"
+  ],
+  "main": "showevent-0.1.1.umd.min.js"
+}

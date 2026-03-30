@@ -1,9 +1,6 @@
-assets/
+
 *Identifier
 # compiled output
-extensions
-assets
-charts
 /dist
 /tmp
 /out-tsc

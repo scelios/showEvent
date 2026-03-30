@@ -1,0 +1,24 @@
+apiVersion: v1
+entries:
+  showevent:
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.10.0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+      catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
+    apiVersion: v2
+    appVersion: 0.1.1
+    created: "2026-03-30T09:34:27.551347529+02:00"
+    description: Help you see easily the events of a resource
+    digest: 768a19a642d6fbf3bacdc963bea8acb98bdff1d8de9d627ef73b157b19b7ba66
+    icon: https://www.svgrepo.com/show/530400/browse.svg
+    name: showevent
+    type: application
+    urls:
+    - assets/showevent/showevent-0.1.1.tgz
+    version: 0.1.1
+generated: "2026-03-30T09:34:27.550342095+02:00"
