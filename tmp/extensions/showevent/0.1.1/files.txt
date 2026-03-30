@@ -1,0 +1,4 @@
+plugin/img/eyes.8e5652d2.svg
+plugin/package.json
+plugin/showevent-0.1.1.umd.min.js
+plugin/showevent-0.1.1.umd.min.js.map

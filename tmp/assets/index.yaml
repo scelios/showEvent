@@ -1,0 +1,23 @@
+apiVersion: v1
+entries:
+  linkedressources:
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.10.0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+      catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-03-30T09:39:45.533306192+02:00"
+    description: linkedressources plugin
+    digest: 680f3187bfe246aab9a70b62b1051403255b7b75d0dae92880fb3906e63efc80
+    name: linkedressources
+    type: application
+    urls:
+    - assets/linkedressources/linkedressources-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-03-30T09:39:45.530477662+02:00"
