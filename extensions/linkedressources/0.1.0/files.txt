@@ -1,9 +1,0 @@
-plugin/img/harvester.20240f8a.png
-plugin/linkedressources-0.1.0.umd.min.326.js
-plugin/linkedressources-0.1.0.umd.min.417.js
-plugin/linkedressources-0.1.0.umd.min.60.js
-plugin/linkedressources-0.1.0.umd.min.766.js
-plugin/linkedressources-0.1.0.umd.min.912.js
-plugin/linkedressources-0.1.0.umd.min.930.js
-plugin/linkedressources-0.1.0.umd.min.js
-plugin/package.json

@@ -1,3 +1,0 @@
-plugin/package.json
-plugin/profilepictures-0.1.0.umd.min.js
-plugin/profilepictures-0.1.0.umd.min.js.map
