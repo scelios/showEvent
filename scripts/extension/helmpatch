@@ -23,6 +23,89 @@ if (!fs.existsSync(chartFolder)) {
   process.exit(1);
 }
 
+function stripGitSuffix(value) {
+  return (value || '').replace(/\.git$/, '');
+}
+
+function parseSourcePath(source) {
+  const cleaned = stripGitSuffix((source || '').trim());
+
+  if (!cleaned) {
+    return '';
+  }
+
+  // Supports https://host/group/project and git@host:group/project inputs.
+  if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
+    const url = new URL(cleaned);
+    return url.pathname.replace(/^\/+/, '');
+  }
+
+  const sshMatch = cleaned.match(/^[^@]+@[^:]+:(.+)$/);
+
+  if (sshMatch) {
+    return sshMatch[1].replace(/^\/+/, '');
+  }
+
+  return cleaned.replace(/^\/+/, '');
+}
+
+function parseOriginBaseUrl(originUrl) {
+  const cleaned = (originUrl || '').trim();
+
+  if (!cleaned) {
+    return '';
+  }
+
+  if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
+    const url = new URL(cleaned);
+    return `${ url.protocol }//${ url.host }`;
+  }
+
+  const sshMatch = cleaned.match(/^[^@]+@([^:]+):.+$/);
+
+  if (sshMatch) {
+    return `https://${ sshMatch[1] }`;
+  }
+
+  return '';
+}
+
+function isGitLabSource(sourcePath, originUrl, sourceRaw) {
+  if ((sourceRaw || '').includes('gitlab')) {
+    return true;
+  }
+
+  if (sourcePath.includes('/projects/')) {
+    return true;
+  }
+
+  return (originUrl || '').includes('gitlab');
+}
+
+function buildRemoteFileEndpoint({ sourceRaw, branch, filePath, originUrl }) {
+  const sourcePath = parseSourcePath(sourceRaw);
+  const sourceBase = parseOriginBaseUrl(sourceRaw);
+  const originBase = parseOriginBaseUrl(originUrl);
+  const serverBase = sourceBase || originBase;
+
+  if (!sourcePath) {
+    return '';
+  }
+
+  if (isGitLabSource(sourcePath, originUrl, sourceRaw)) {
+    if (!serverBase) {
+      return '';
+    }
+
+    const encodedProject = encodeURIComponent(sourcePath);
+    const encodedFile = encodeURIComponent(filePath);
+
+    return `${ serverBase }/api/v4/projects/${ encodedProject }/repository/files/${ encodedFile }/raw?ref=${ encodeURIComponent(branch) }`;
+  }
+
+  return `https://raw.githubusercontent.com/${ sourcePath }/${ branch }/${ filePath }`;
+}
+
 // --------------------------------------------------------------------------------
 // Chart.yaml updates (annotations)
 // --------------------------------------------------------------------------------
@@ -61,17 +144,31 @@ const isGitHubBuild = process.env.GITHUB_BUILD === 'true';
 if (isGitHubBuild) {
   const githubSource = process.env.GITHUB_SOURCE;
   const githubBranch = process.env.GITHUB_BRANCH;
+  const originUrl = process.env.REMOTE_ORIGIN_URL;
 
-  values.plugin.endpoint = `https://raw.githubusercontent.com/${ githubSource }/${ githubBranch }/extensions/${ pkgName }/${ pkgVersion }`;
+  const endpoint = buildRemoteFileEndpoint({
+    sourceRaw: githubSource,
+    branch: githubBranch,
+    filePath: `extensions/${ pkgName }/${ pkgVersion }`,
+    originUrl,
+  });
+
+  const compressedEndpoint = buildRemoteFileEndpoint({
+    sourceRaw: githubSource,
+    branch: githubBranch,
+    filePath: `extensions/${ pkgName }/${ pkgVersion }.tgz`,
+    originUrl,
+  });
+
+  values.plugin.endpoint = endpoint;
+  values.plugin.compressedEndpoint = compressedEndpoint;
 } else {
   const imagePrefix = process.env.IMAGE_PREFIX || '';
   const baseExt = process.env.BASE_EXT;
 
   values.plugin.endpoint = `http://${ imagePrefix }${ baseExt }-svc.cattle-ui-plugin-system:8080/plugin/${ pkgFullName }`;
+  values.plugin.compressedEndpoint = `${ values.plugin.endpoint }.tgz`;
 }
-
-// Always set compressedEndpoint as endpoint + .tgz
-values.plugin.compressedEndpoint = `${ values.plugin.endpoint }.tgz`;
 
 // Write updated values.yaml
 fs.writeFileSync(valuesFile, yaml.dump(values, { quotingType: '"' }), 'utf8');
