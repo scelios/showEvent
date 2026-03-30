@@ -232,6 +232,18 @@ COMMANDS=("node" "jq" "yq" "git" "helm" "yarn")
 #   fi
 # fi
 
+# Cross-platform md5 hash function
+compute_md5() {
+  if command -v md5 >/dev/null 2>&1; then
+    md5 -q "$1"
+  elif command -v md5sum >/dev/null 2>&1; then
+    md5sum "$1" | awk '{print $1}'
+  else
+    echo "Error: neither md5 nor md5sum found" >&2
+    return 1
+  fi
+}
+
 HAVE_COMMANDS="true"
 for CMD in "${COMMANDS[@]}"
 do
@@ -322,7 +334,7 @@ if [ "${UPDATE_OLD_PACKAGES}" = "true" ]; then
       # path in chart may be different to tar file name, so extratct the Chart.yaml file to the top-level folder
       tar --strip-components=1 -C ${TMP} -xf ${CHART_ARCHIVE} */Chart.yaml
 
-      EXISTING_MD5=$(md5 -q ${TMP}/Chart.yaml)
+      EXISTING_MD5=$(compute_md5 ${TMP}/Chart.yaml)
       VERSION=$(yq eval .version ${TMP}/Chart.yaml)
 
       CHART_FOLDER=${CHARTS}/${EXT_NAME}/${VERSION}
@@ -343,7 +355,7 @@ if [ "${UPDATE_OLD_PACKAGES}" = "true" ]; then
 
         # path in chart may be different to tar file name, so extratct the Chart.yaml file to the top-level folder
         tar --strip-components=1 -C ${TMP} -xf ${TMP}/tmp_chart/${FILENAME} */Chart.yaml
-        LATEST_MD5=$(md5 -q ${TMP}/Chart.yaml)
+        LATEST_MD5=$(compute_md5 ${TMP}/Chart.yaml)
 
         rm -f $TMP/tmp_chart/${FILENAME}
 
