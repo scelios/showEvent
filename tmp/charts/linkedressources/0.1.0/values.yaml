@@ -1,12 +1,14 @@
-nameOverride: ''
-fullnameOverride: ''
+nameOverride: ""
+fullnameOverride: ""
 plugin:
   enabled: true
-  versionOverride: ''
+  versionOverride: ""
   endpoint: >-
     https://raw.githubusercontent.com/scelios/showEvent/master/extensions/linkedressources/0.1.0
   compressedEndpoint: >-
     https://raw.githubusercontent.com/scelios/showEvent/master/extensions/linkedressources/0.1.0.tgz
   noCache: false
   noAuth: false
-  metadata: {}
+  metadata:
+    catalog.cattle.io/rancher-version: ">= 2.10.0"
+    catalog.cattle.io/ui-extensions-version: ">= 3.0.0 < 4.0.0"
