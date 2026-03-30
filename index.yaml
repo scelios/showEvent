@@ -12,12 +12,53 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-03-30T09:39:45.533306192+02:00"
+    created: "2026-03-30T11:24:37.16763444+02:00"
     description: linkedressources plugin
-    digest: 680f3187bfe246aab9a70b62b1051403255b7b75d0dae92880fb3906e63efc80
+    digest: e4f5948030780fe9caa394c80496177fa8006f0941d6ecdc7f6db60cc33b81f0
     name: linkedressources
     type: application
     urls:
     - assets/linkedressources/linkedressources-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-30T09:39:45.530477662+02:00"
+  profilepictures:
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.10.0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+      catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-03-30T11:24:37.168034887+02:00"
+    description: profilepictures plugin
+    digest: 5c26d50450dc1e72a746a3d81e340827caf1047a3da610b6f55fea66d5054547
+    name: profilepictures
+    type: application
+    urls:
+    - assets/profilepictures/profilepictures-0.1.0.tgz
+    version: 0.1.0
+  showevent:
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.10.0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+      catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
+    apiVersion: v2
+    appVersion: 0.1.1
+    created: "2026-03-30T11:24:37.168445617+02:00"
+    description: Help you see easily the events of a resource
+    digest: dfcde1998ce284e260eaeb52f47557ab9de8a02306cdfc5928820a0d983213ff
+    icon: https://www.svgrepo.com/show/530400/browse.svg
+    name: showevent
+    type: application
+    urls:
+    - assets/showevent/showevent-0.1.1.tgz
+    version: 0.1.1
+generated: "2026-03-30T11:24:37.166915848+02:00"
