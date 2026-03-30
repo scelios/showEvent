@@ -2,7 +2,7 @@ annotations:
   catalog.cattle.io/certified: rancher
   catalog.cattle.io/namespace: cattle-ui-plugin-system
   catalog.cattle.io/os: linux
-  catalog.cattle.io/permits-os: linux, windows
+  catalog.cattle.io/permits-os: 'linux, windows'
   catalog.cattle.io/scope: management
   catalog.cattle.io/ui-component: plugins
   catalog.cattle.io/rancher-version: '>= 2.10.0'
@@ -13,4 +13,4 @@ description: Help you see easily the events of a resource
 name: showevent
 type: application
 version: 0.1.1
-icon: https://www.svgrepo.com/show/530400/browse.svg
+icon: 'https://www.svgrepo.com/show/530400/browse.svg'
