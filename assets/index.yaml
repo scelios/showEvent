@@ -25,54 +25,6 @@ entries:
     urls:
     - assets/linkedressources/extension-server-0.1.0.tgz
     version: 0.1.0
-  - annotations:
-      catalog.cattle.io/certified: rancher
-      catalog.cattle.io/namespace: cattle-ui-plugin-system
-      catalog.cattle.io/os: linux
-      catalog.cattle.io/permits-os: linux, windows
-      catalog.cattle.io/rancher-version: '>= 2.10.0'
-      catalog.cattle.io/scope: management
-      catalog.cattle.io/ui-component: plugins
-      catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
-    apiVersion: v2
-    appVersion: 0.1.0
-    created: "2026-03-30T16:15:35.333004551+02:00"
-    description: Extension server
-    digest: 3ae220efd6fe138ca323bc7d60ead50a682880b63490e90219e010155dc9fc57
-    home: https://rancher.com
-    icon: https://docs.ranchermanager.rancher.io/img/rancher-logo-horiz-color.svg
-    keywords:
-    - applications
-    - infrastructure
-    name: extension-server
-    type: application
-    urls:
-    - assets/profilepictures/extension-server-0.1.0.tgz
-    version: 0.1.0
-  - annotations:
-      catalog.cattle.io/certified: rancher
-      catalog.cattle.io/namespace: cattle-ui-plugin-system
-      catalog.cattle.io/os: linux
-      catalog.cattle.io/permits-os: linux, windows
-      catalog.cattle.io/rancher-version: '>= 2.10.0'
-      catalog.cattle.io/scope: management
-      catalog.cattle.io/ui-component: plugins
-      catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
-    apiVersion: v2
-    appVersion: 0.1.0
-    created: "2026-03-30T16:15:35.333860364+02:00"
-    description: Extension server
-    digest: 967594feef48468bc068c961dfa567602bba8d2739097efa902d37e05e3205a8
-    home: https://rancher.com
-    icon: https://docs.ranchermanager.rancher.io/img/rancher-logo-horiz-color.svg
-    keywords:
-    - applications
-    - infrastructure
-    name: extension-server
-    type: application
-    urls:
-    - assets/showevent/extension-server-0.1.0.tgz
-    version: 0.1.0
   linkedressources:
   - annotations:
       catalog.cattle.io/certified: rancher
@@ -85,9 +37,9 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-03-30T11:24:37.16763444+02:00"
+    created: "2026-03-30T16:23:23.081302422+02:00"
     description: linkedressources plugin
-    digest: e4f5948030780fe9caa394c80496177fa8006f0941d6ecdc7f6db60cc33b81f0
+    digest: 1ce3bd2f1acf16f6af5d0fdfc533af0e78faab362d3ce91a895fc6258748475b
     name: linkedressources
     type: application
     urls:
@@ -105,9 +57,9 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-03-30T11:24:37.168034887+02:00"
+    created: "2026-03-30T16:23:23.08327511+02:00"
     description: profilepictures plugin
-    digest: 5c26d50450dc1e72a746a3d81e340827caf1047a3da610b6f55fea66d5054547
+    digest: 793ca7d666071ecf1906ec2eb6f103ff53163cbbe2a49383ca9bcfde920dc14a
     name: profilepictures
     type: application
     urls:
@@ -125,13 +77,13 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.1
-    created: "2026-03-30T11:24:37.168445617+02:00"
+    created: "2026-03-30T16:23:23.083649949+02:00"
     description: Help you see easily the events of a resource
-    digest: dfcde1998ce284e260eaeb52f47557ab9de8a02306cdfc5928820a0d983213ff
+    digest: 71d47c48d2c0214d0ebca7ea38bfb95a047c32602f867e8ed3454cf77f51f3be
     icon: https://www.svgrepo.com/show/530400/browse.svg
     name: showevent
     type: application
     urls:
     - assets/showevent/showevent-0.1.1.tgz
     version: 0.1.1
-generated: "2026-03-30T16:15:35.331297609+02:00"
+generated: "2026-03-30T16:23:23.080794275+02:00"

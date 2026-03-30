@@ -1,5 +1,78 @@
 apiVersion: v1
 entries:
+  extension-server:
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.10.0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+      catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-03-30T16:15:35.33226473+02:00"
+    description: Extension server
+    digest: 2b9ad4279f1002bcba8b207584bf6f3d4444117145d76bb105a92ca566a28bbf
+    home: https://rancher.com
+    icon: https://docs.ranchermanager.rancher.io/img/rancher-logo-horiz-color.svg
+    keywords:
+    - applications
+    - infrastructure
+    name: extension-server
+    type: application
+    urls:
+    - assets/linkedressources/extension-server-0.1.0.tgz
+    version: 0.1.0
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.10.0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+      catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-03-30T16:15:35.333004551+02:00"
+    description: Extension server
+    digest: 3ae220efd6fe138ca323bc7d60ead50a682880b63490e90219e010155dc9fc57
+    home: https://rancher.com
+    icon: https://docs.ranchermanager.rancher.io/img/rancher-logo-horiz-color.svg
+    keywords:
+    - applications
+    - infrastructure
+    name: extension-server
+    type: application
+    urls:
+    - assets/profilepictures/extension-server-0.1.0.tgz
+    version: 0.1.0
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.10.0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+      catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-03-30T16:15:35.333860364+02:00"
+    description: Extension server
+    digest: 967594feef48468bc068c961dfa567602bba8d2739097efa902d37e05e3205a8
+    home: https://rancher.com
+    icon: https://docs.ranchermanager.rancher.io/img/rancher-logo-horiz-color.svg
+    keywords:
+    - applications
+    - infrastructure
+    name: extension-server
+    type: application
+    urls:
+    - assets/showevent/extension-server-0.1.0.tgz
+    version: 0.1.0
   linkedressources:
   - annotations:
       catalog.cattle.io/certified: rancher
@@ -61,4 +134,4 @@ entries:
     urls:
     - assets/showevent/showevent-0.1.1.tgz
     version: 0.1.1
-generated: "2026-03-30T13:56:18.218158576+02:00"
+generated: "2026-03-30T16:15:35.331297609+02:00"

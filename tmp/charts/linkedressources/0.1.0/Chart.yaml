@@ -2,19 +2,14 @@ annotations:
   catalog.cattle.io/certified: rancher
   catalog.cattle.io/namespace: cattle-ui-plugin-system
   catalog.cattle.io/os: linux
-  catalog.cattle.io/permits-os: 'linux, windows'
+  catalog.cattle.io/permits-os: linux, windows
   catalog.cattle.io/scope: management
   catalog.cattle.io/ui-component: plugins
   catalog.cattle.io/rancher-version: '>= 2.10.0'
   catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
 apiVersion: v2
 appVersion: 0.1.0
-description: Extension server
-name: extension-server
+description: linkedressources plugin
+name: linkedressources
 type: application
-keywords:
-  - applications
-  - infrastructure
 version: 0.1.0
-icon: 'https://docs.ranchermanager.rancher.io/img/rancher-logo-horiz-color.svg'
-home: 'https://rancher.com'
