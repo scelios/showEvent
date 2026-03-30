@@ -4,9 +4,9 @@ plugin:
   enabled: true
   versionOverride: ""
   endpoint: >-
-    https://raw.githubusercontent.com/https://github.com/scelios/showEvent.git/main/extensions/showevent/0.1.1
+    https://raw.githubusercontent.com/scelios/showEvent/master/extensions/showevent/0.1.1
   compressedEndpoint: >-
-    https://raw.githubusercontent.com/https://github.com/scelios/showEvent.git/main/extensions/showevent/0.1.1.tgz
+    https://raw.githubusercontent.com/scelios/showEvent/master/extensions/showevent/0.1.1.tgz
   noCache: false
   noAuth: false
   metadata:
