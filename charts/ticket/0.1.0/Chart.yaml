@@ -9,8 +9,7 @@ annotations:
   catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
 apiVersion: v2
 appVersion: 0.1.0
-description: Help you show linked resources and their events in an easy way.
-name: linkedressources
+description: ticket plugin
+name: ticket
 type: application
 version: 0.1.0
-icon: 'https://www.svgrepo.com/show/530400/browse.svg'
