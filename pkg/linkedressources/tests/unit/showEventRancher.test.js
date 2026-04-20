@@ -24,6 +24,8 @@ jest.mock('@shell/store/type-map.utils', () => ({
 describe('showEventRancher.vue (Vue 3)', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
     
     // Always create the element the component tries to verify visibility of
     const ext = document.createElement('div');
@@ -87,11 +89,6 @@ describe('showEventRancher.vue (Vue 3)', () => {
   });
 
   it('shows "Recent Events ext" when #events does not exist', async () => {
-    const ext = document.createElement('div');
-    ext.id = 'Recent Events ext';
-    ext.style.display = 'none';
-    document.body.appendChild(ext);
-
     const wrapper = mountComp();
     await wrapper.vm.$nextTick();
 
@@ -114,6 +111,31 @@ describe('showEventRancher.vue (Vue 3)', () => {
 
     const emits = wrapper.emitted('count') || [];
     expect(emits[emits.length - 1][0]).toBe(2);
+  });
+
+  it('filters namespace fallback rows by name and kind', async () => {
+    const wrapper = mountComp({
+      metadata: { name: 'x', namespace: 'ns', uid: null },
+    });
+
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        data: [
+          { involvedObject: { name: 'x', kind: 'SecretStore' } },
+          { involvedObject: { name: 'x', kind: 'ConfigMap' } },
+          { involvedObject: { name: 'other', kind: 'SecretStore' } },
+        ]
+      }),
+      text: async () => '',
+      status: 200,
+      statusText: 'OK',
+    });
+
+    await wrapper.vm.updateEventCount();
+
+    const emits = wrapper.emitted('count') || [];
+    expect(emits[emits.length - 1][0]).toBe(1);
   });
 
   it('emits 0 when fetch fails', async () => {

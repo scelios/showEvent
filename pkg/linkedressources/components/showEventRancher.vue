@@ -36,35 +36,12 @@ import {
 } from '@shell/config/pagination-table-headers';
 import { headerFromSchemaColString } from '@shell/store/type-map.utils';
 import { EVENT, NAMESPACE } from '@shell/config/types';
+import { buildApiUrlFromSelfLink } from '../../../helper/apiUrlHelpers';
+import { fetchJson } from '../../../helper/fetchJson.js';
 
-// Small helper to build a Steve URL safely
-function withQuery(url, params) {
-  const u = new URL(url, window.location.origin);
-
-  for (const [k, v] of Object.entries(params || {})) {
-    if (v === undefined || v === null || v === '') {
-      continue;
-    }
-    u.searchParams.set(k, String(v));
-  }
-
-  return u.toString();
-}
-
-async function fetchJson(url) {
-  const resp = await fetch(url, {
-    method: 'GET',
-    credentials: 'include',
-    headers: { accept: 'application/json' },
-  });
-
-  if (!resp.ok) {
-    const text = await resp.text();
-    throw new Error(`GET ${url} failed: ${resp.status} ${resp.statusText}: ${text}`);
-  }
-
-  return await resp.json();
-}
+const EVENT_COUNT_LIMIT = 500;
+const EVENT_NAMESPACE_FIELD = 'metadata.namespace';
+const EVENT_UID_FIELD = 'involvedObject.uid';
 
 export default {
   name: 'ShowEventRancher',
@@ -120,13 +97,7 @@ export default {
     },
 
     eventsCollectionUrl() {
-      const link = this.eventSchema?.links?.collection;
-
-      if (link) {
-        return new URL(link, window.location.origin).toString();
-      }
-
-      return `${window.location.origin}/v1/events`;
+      return buildApiUrlFromSelfLink(this.eventSchema?.links?.collection || '/v1/events');
     },
     
     eventHeaders() {
@@ -177,11 +148,14 @@ export default {
     },
 
     checkVisibility() {
-      if (document.getElementById('events')) {
-            document.getElementById('Recent Events ext').style.display = 'none';
+      const eventsEl = document.getElementById('events');
+      const extEl = document.getElementById('Recent Events ext');
+      if (!eventsEl && extEl) {
+        extEl.style.display = '';
+        return;
       }
-      else {
-        document.getElementById('Recent Events ext').style.display = '';
+      if (eventsEl && extEl) {
+        extEl.style.display = 'none';
       }
     },
 
@@ -193,121 +167,137 @@ export default {
       this.$emit('count', count);
     },
 
-    /**
-     * This is what the table uses for server-side filtering.
-     * Keep it: it improves the displayed table too.
-     */
     filterEventsApi(pagination) {
+      const filter = this.buildEventFilter();
+      if (!filter) {
+        return pagination;
+      }
+
       if (!pagination.filters) {
         pagination.filters = [];
       }
 
-      const res = this.resource;
-      const uid = res?.metadata?.uid;
-      const nsName = res?.metadata?.name;
-
-      const field = this.isNamespace ? 'metadata.namespace' : 'involvedObject.uid';
-      const value = this.isNamespace ? nsName : uid;
-
-      if (!value) {
-        return pagination;
-      }
-
+      const field = this.isNamespace ? EVENT_NAMESPACE_FIELD : EVENT_UID_FIELD;
       const existing = pagination.filters.find((f) => f.fields.some((ff) => ff.field === field));
 
-      const required = PaginationParamFilter.createSingleField({
-        field,
-        exact: true,
-        value,
-        equals: true
-      });
-
       if (existing) {
-        Object.assign(existing, required);
+        Object.assign(existing, filter);
       } else {
-        pagination.filters.push(required);
+        pagination.filters.push(filter);
       }
 
       return pagination;
     },
 
+    buildEventFilter() {
+      const value = this.isNamespace ? this.resource?.metadata?.name : this.resource?.metadata?.uid;
+
+      if (!value) {
+        return null;
+      }
+
+      return PaginationParamFilter.createSingleField({
+        field: this.isNamespace ? EVENT_NAMESPACE_FIELD : EVENT_UID_FIELD,
+        exact: true,
+        value,
+        equals: true
+      });
+    },
+
+    // Build the query for fetching events related to the resource. It will attempt to build from either UID or namespace+name, depending on what is available.
+    buildEventQuery(resource) {
+      if (!resource) {
+        return null;
+      }
+
+      const uid = resource?.metadata?.uid;
+      const name = resource?.metadata?.name;
+      const namespace = resource?.metadata?.namespace;
+
+      if (this.isNamespace) {
+        console.debug('[events] building query for namespace', name);
+        return {
+          url: buildApiUrlFromSelfLink(this.eventsCollectionUrl, {
+            filter: `${ EVENT_NAMESPACE_FIELD }=${ name }`,
+            limit: EVENT_COUNT_LIMIT,
+          }),
+          clientFilter: null,
+        };
+      }
+
+      if (uid) {
+        console.debug('[events] building query using UID', { uid });
+        return {
+          url: buildApiUrlFromSelfLink(this.eventsCollectionUrl, {
+            filter: `${ EVENT_UID_FIELD }=${ uid }`,
+            limit: EVENT_COUNT_LIMIT,
+          }),
+          clientFilter: null,
+        };
+      }
+
+      if (namespace) {
+        console.debug('[events] building query using namespace and name', { namespace, name });
+        return {
+          url: buildApiUrlFromSelfLink(this.eventsCollectionUrl, {
+            filter: `${ EVENT_NAMESPACE_FIELD }=${ namespace }`,
+            limit: EVENT_COUNT_LIMIT,
+          }),
+          clientFilter: (event) => {
+            const involvedObject = event?.involvedObject;
+            if (!involvedObject) {
+              return false;
+            }
+
+            const kind = (resource?.kind || '').toLowerCase();
+            if (name && involvedObject.name !== name) {
+              return false;
+            }
+
+            if (kind && (involvedObject.kind || '').toLowerCase() !== kind) {
+              return false;
+            }
+
+            return true;
+          },
+        };
+      }
+
+      return null;
+    },
+
+    async fetchEventRows(query = this.buildEventQuery(this.resource)) {
+      if (!query) {
+        return [];
+      }
+
+      const response = await fetchJson(query.url);
+      const rows = response?.data || [];
+
+      return query.clientFilter ? rows.filter(query.clientFilter) : rows;
+    },
+
     /**
-     * Fetch events count with one  request.
-     * - If UID exists, server-filter by involvedObject.uid.
-     * - Else, server-filter by namespace (if namespaced), then client-filter by kind+name.
+     * Fetch the event count using the same query shape as the table.
      */
     async updateEventCount() {
       try {
-        const res = this.resource;
-        if (!res) {
+        if (!this.resource) {
           this.emitCountIfChanged(0);
           return;
         }
 
-        const uid = res?.metadata?.uid;
-        const name = res?.metadata?.name;
-        const namespace = res?.metadata?.namespace;
-        const kind = (res?.kind || '').toLowerCase();
-
-        // If you know resource is a Namespace itself, use that
-        const isNamespace = this.isNamespace;
-
-        // Request size. Events per object are usually small; 500 is safe.
-        const limit = 500;
-
-        let url;
-
-        if (isNamespace) {
-          // Namespace page: show events in that namespace
-          url = withQuery(this.eventsCollectionUrl, {
-            'filter': `metadata.namespace=${encodeURIComponent(name)}`,
-            'limit': limit,
-          });
-        } else if (uid) {
-          // Most reliable
-          url = withQuery(this.eventsCollectionUrl, {
-            'filter': `involvedObject.uid=${encodeURIComponent(uid)}`,
-            'limit': limit,
-          });
-        } else if (namespace) {
-          // Fallback: fetch events in namespace, then filter locally
-          url = withQuery(this.eventsCollectionUrl, {
-            'filter': `metadata.namespace=${encodeURIComponent(namespace)}`,
-            'limit': limit,
-          });
-        } else {
-          // Cluster-scoped + no UID: we can’t safely count without a broader query
-          // Avoid expensive calls; just emit unknown(0)
+        const query = this.buildEventQuery(this.resource);
+        if (!query) {
           this.emitCountIfChanged(0);
           return;
         }
 
-        const obj = await fetchJson(url);
-        const rows = obj?.data || [];
-
-        let count;
-        if (isNamespace) {
-          count = rows.length;
-        } else if (uid) {
-          count = rows.length;
-        } else {
-          // namespace fallback: filter by involvedObject.name + kind (if available)
-          const filtered = rows.filter((e) => {
-            const inv = e?.involvedObject;
-            if (!inv) return false;
-
-            if (name && inv.name !== name) return false;
-            if (kind && (inv.kind || '').toLowerCase() !== kind) return false;
-
-            return true;
-          });
-
-          count = filtered.length;
-        }
+        const rows = await this.fetchEventRows(query);
+        const count = rows.length;
 
         this.emitCountIfChanged(count);
       } catch (e) {
-        // Don’t break the UI for count errors
         console.warn('[events] failed to update count', e);
         this.emitCountIfChanged(0);
       }

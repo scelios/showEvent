@@ -1,7 +1,8 @@
 {
   "name": "profilepictures",
-  "description": "profilepictures plugin",
+  "description": "Put your profile picture in Rancher UI.",
   "version": "0.1.0",
+  "icon": "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/core-gradient-free/interface-essential/interface-essential/user-circle-single-nbls2m428grsftbflv1sh.png?_a=DATAiZAAZAA0",
   "private": false,
   "rancher": {
     "annotations": {

@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import LinkedResources from '../../components/linkedressources.vue';
 
 jest.mock('@shell/config/table-headers', () => ({
   STATE: {}, TYPE: {}, NAME: {}, NAMESPACE: {},
@@ -10,6 +9,7 @@ jest.mock('@shell/config/product/explorer', () => ({
 }));
 
 jest.mock('@shell/plugins/dashboard-store/resource-class', () => ({
+  __esModule: true,
   STATES_ENUM: { MISSING: 'missing' },
   colorForState: () => 'text-info',
   stateDisplay: () => 'Missing',
@@ -27,14 +27,32 @@ global.fetch = jest.fn(() =>
   })
 );
 
+const LinkedResources = require('../../components/linkedressources.vue').default;
+
 describe('linkedressources.vue (Vue 3)', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
+    jest.spyOn(console, 'debug').mockImplementation(() => {});
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ metadata: { relationships: [] } }),
+      text: async () => '',
+      status: 200,
+      statusText: 'OK',
+    });
   });
 
-  function mountComp() {
+  afterEach(() => {
+    console.debug.mockRestore();
+    console.warn.mockRestore();
+    console.error.mockRestore();
+  });
+
+  function mountComp(resource = { metadata: { relationships: [] } }) {
     return shallowMount(LinkedResources, {
-      props: { resource: { metadata: { relationships: [] } } },
+      props: { resource },
       global: {
         stubs: {
           ResourceTable: true,
@@ -74,7 +92,7 @@ describe('linkedressources.vue (Vue 3)', () => {
     expect(document.getElementById('Linked Resources').style.display).toBe('none');
   });
 
-  it('shows "Linked Resources" element when #related does not exist', async () => {
+  it('keeps "Linked Resources" displayed when #related does not exist', async () => {
     const linked = document.createElement('div');
     linked.id = 'Linked Resources';
     linked.style.display = 'none';
@@ -85,5 +103,78 @@ describe('linkedressources.vue (Vue 3)', () => {
 
     wrapper.vm.checkVisibility();
     expect(document.getElementById('Linked Resources').style.display).toBe('');
+  });
+
+  it('loads relationships from the api response', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        metadata: {
+          relationships: [
+            { fromId: 'ns-a/source-a', fromType: 'configmap', state: 'active' },
+            { toId: 'ns-b/target-b', toType: 'secret', state: 'active' },
+          ]
+        }
+      }),
+      text: async () => '',
+      status: 200,
+      statusText: 'OK',
+    });
+
+    const wrapper = mountComp({
+      metadata: {
+        relationships: [],
+      },
+      links: { self: '/v1/configmaps/ns-a/source-a' },
+    });
+
+    global.fetch.mockClear();
+    await wrapper.vm.loadLinkedResources();
+
+    expect(global.fetch).toHaveBeenCalled();
+    expect(wrapper.vm.referredToByResources).toHaveLength(1);
+    expect(wrapper.vm.refersToResources).toHaveLength(1);
+
+    const emits = wrapper.emitted('counts') || [];
+    expect(emits[emits.length - 1][0]).toEqual({ referredToBy: 1, refersTo: 1 });
+  });
+
+  it('uses api relationships even when resource metadata is empty', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        metadata: {
+          relationships: [
+            { fromId: 'ns-a/source-a', fromType: 'configmap', state: 'active' },
+            { toId: 'target-b', toType: 'secret', state: 'active' },
+          ]
+        }
+      }),
+      text: async () => '',
+      status: 200,
+      statusText: 'OK',
+    });
+
+    const wrapper = mountComp({
+      metadata: { relationships: [] },
+      links: { self: '/v1/configmaps/ns-a/source-a' },
+    });
+
+    await wrapper.vm.loadLinkedResources();
+
+    expect(global.fetch).toHaveBeenCalled();
+    expect(wrapper.vm.referredToByResources).toHaveLength(1);
+    expect(wrapper.vm.refersToResources).toHaveLength(1);
+
+    const emits = wrapper.emitted('counts') || [];
+    expect(emits[emits.length - 1][0]).toEqual({ referredToBy: 1, refersTo: 1 });
+  });
+
+  it('parses namespaced and non-namespaced resource ids consistently', () => {
+    const wrapper = mountComp();
+
+    expect(wrapper.vm.parseResourceId('ns-a/name-a')).toEqual({ namespace: 'ns-a', name: 'name-a' });
+    expect(wrapper.vm.parseResourceId('cluster-wide-name')).toEqual({ namespace: undefined, name: 'cluster-wide-name' });
+    expect(wrapper.vm.parseResourceId('ns-a/path/with/slashes')).toEqual({ namespace: 'ns-a', name: 'path/with/slashes' });
   });
 });

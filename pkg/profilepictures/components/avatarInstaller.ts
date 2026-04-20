@@ -1,6 +1,20 @@
-const STORAGE_KEY = 'linkedressources.avatar.dataUrl';
+const STORAGE_KEY = 'profilepictures.avatar.dataUrl';
 import { getEmailFromJwtCookies } from './getEmailFromJwtCookies';
+import sha256 from 'sha256';
 let installed = false;
+let patchScheduled = false;
+
+function schedulePatchAvatar() {
+  if (patchScheduled) {
+    return;
+  }
+
+  patchScheduled = true;
+  requestAnimationFrame(() => {
+    patchScheduled = false;
+    void patchAvatar();
+  });
+}
 
 
 export function setAvatarDataUrl(dataUrl: string) {
@@ -14,18 +28,18 @@ export function installAvatarPatcher() {
   }
   installed = true;
 
-  patchAvatar();
+  schedulePatchAvatar();
 
-  // Patch on DOM updates (SPA rerenders)
+  // Observe only the header menu subtree and structural changes.
   const observer = new MutationObserver(() => {
-    patchAvatar();
+    schedulePatchAvatar();
   });
 
-  observer.observe(document.documentElement, {
+  const headerRoot = document.querySelector('[data-testid="nav_header_showUserMenu"]') || document.body;
+
+  observer.observe(headerRoot, {
     subtree: true,
     childList: true,
-    attributes: true,
-    attributeFilter: ['src', 'class', 'style', 'alt']
   });
 }
 
@@ -34,9 +48,8 @@ let fetching: Promise<string | null> | null = null;
 
 function gravatarUrlFromEmail(email: string | null): string | null {
   const normalized = (email || '').trim().toLowerCase();
-  const sha256 = require('sha256');
   if (!normalized) {
-    // return `https://secure.gravatar.com/avatar/${sha256('j.martin@monaco-telecom.mc')}?d=identicon`;
+    // return `https://secure.gravatar.com/avatar/${sha256('b.audibert@monaco-telecom.mc')}?d=identicon`; // use for testing with a known gravatar
     return null;
   }
   return `https://secure.gravatar.com/avatar/${sha256(normalized)}?d=identicon`;

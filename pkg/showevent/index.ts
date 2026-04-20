@@ -2,7 +2,7 @@ import { importTypes } from '@rancher/auto-import';
 import { IPlugin } from '@shell/core/types';
 // Import assets and JSON at the top level
 import pkg from './package.json';
-import icon from './eyes.svg';
+// import icon from './eyes.svg';
 
 // Init the package
 export default function(plugin: IPlugin): void {
@@ -10,7 +10,7 @@ export default function(plugin: IPlugin): void {
 
   plugin.metadata = {
     ...pkg,
-    icon: icon
+    // icon: icon
   };
 
   // plugin.addPanel(

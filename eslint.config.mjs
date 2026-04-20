@@ -39,7 +39,8 @@ export default defineConfig(
       '**/coverage/**', 
       '**/dist/**', 
       '**/node_modules/**',
-      '**/dist-pkg/**'
+      '**/dist-pkg/**',
+      '**/tests/**'
     ],
   },
   {

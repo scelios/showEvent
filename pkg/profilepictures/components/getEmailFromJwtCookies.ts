@@ -8,7 +8,7 @@ function getCookie(name: string): string | null {
 
 interface JwtPayload {
     email?: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export function getEmailFromJwtCookies(): string | null {

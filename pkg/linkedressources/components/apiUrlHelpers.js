@@ -7,6 +7,9 @@ export function buildApiUrlFromSelfLink(selfLink, extraQuery = {}) {
     if (!selfLink.includes('/v1/')) {
       selfLink = getApiUrlFromBrowserUrl(selfLink) ;
     }
+    if (!selfLink) {
+      throw new Error('Could not determine API URL from selfLink');
+     }
     // selfLink might be absolute or relative; URL() handles both
     const url = new URL(selfLink, window.location.origin);
     // console.debug('Resource selfLink:', url);
@@ -56,7 +59,6 @@ export function getApiUrlFromBrowserUrl(browserUrl) {
       // The first segment is the singular type (e.g. "pod"). 
       // The Steve API expects plural (e.g. "pods").
       // NOTE: This simple 's' append works for most resources (pod->pods, node->nodes, app->apps)
-      // but might fail for complex irregularities unless you have a schema dictionary.
       parts[0] = parts[0] + 's'; 
     }
     const finalPath = parts.join('/');
@@ -72,8 +74,7 @@ export function getApiUrlFromBrowserUrl(browserUrl) {
 
 export function getResourceUrl(res) {
   try {
-      // as requested: url = self.url.split('/')[-2] + {type} + {name}
-      // Remove last 2 segments and append type + name
+      // Remove last 3 segments and append type + namespace + name
       const parts = window.location.href.split('/');
       parts.pop();
       parts.pop();

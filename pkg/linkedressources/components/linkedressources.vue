@@ -90,27 +90,13 @@
   
   <script>
   import { STATES_ENUM, colorForState, stateDisplay as stateDisplayFn } from '@shell/plugins/dashboard-store/resource-class';
-  import { buildApiUrlFromSelfLink , getApiUrlFromBrowserUrl } from './apiUrlHelpers';
+  import { buildApiUrlFromSelfLink, getApiUrlFromBrowserUrl } from '../../../helper/apiUrlHelpers.js';
   import ResourceTable from '@shell/components/ResourceTable';
   import { BadgeState } from '@components/BadgeState';
   import { STATE, TYPE, NAME, NAMESPACE } from '@shell/config/table-headers';
   import { NAME as EXPLORER } from '@shell/config/product/explorer';
   import { sortableNumericSuffix } from '@shell/utils/sort';
-  
-  async function fetchJson(url) {
-    const resp = await fetch(url, {
-      method: 'GET',
-      credentials: 'include',
-      headers: { accept: 'application/json' },
-    });
-  
-    if (!resp.ok) {
-      const text = await resp.text();
-      throw new Error(`GET ${url} failed: ${resp.status} ${resp.statusText}: ${text}`);
-    }
-  
-    return await resp.json();
-  }
+  import { fetchJson } from '../../../helper/fetchJson.js';
 
   export default {
       name: 'LinkedResources',
@@ -171,7 +157,7 @@
         },
         resource: {
           handler() {
-            this.loadLinkedResourcesFromRelationships();
+            this.loadLinkedResources();
           },
           deep: false
         }
@@ -179,92 +165,54 @@
   
       mounted() {
       this.checkVisibility();
-      this.loadLinkedResourcesFromRelationships();
+      this.loadLinkedResources();
     },
   
       methods: {
-        checkVisibility(){
-          if (document.getElementById('related')) {
-                document.getElementById('Linked Resources').style.display = 'none';
+        // if the "Related" tab is present, hide the Linked Resources tab
+        checkVisibility() {
+          const eventsEl = document.getElementById('related');
+          const extEl = document.getElementById('Linked Resources');
+          if (!eventsEl && extEl) {
+            extEl.style.display = '';
+            return;
           }
-          else {
-            document.getElementById('Linked Resources').style.display = '';
+          if (eventsEl && extEl) {
+            extEl.style.display = 'none';
           }
         },
-        async getRelationshipsFromObj(resourceObj) {
-          if (!resourceObj || !resourceObj.links?.self) {
-            console.warn("Resource has no self link", resourceObj);
-            return { referredToBy: [], refersTo: [] };
-          }
-  
-          const selfLink = resourceObj.links.self;
-          // if (!selfLink){
-          //   selflink = getApiUrlFromBrowserUrl(window.location.href);
-          // }
-          
-          const url = buildApiUrlFromSelfLink(selfLink, {
+
+        async fetchResourceFromApi() {
+          const selfLink = this.resource?.links?.self || window.location.href;
+
+          let url = buildApiUrlFromSelfLink(selfLink, {
             exclude: 'metadata.managedFields',
           });
-  
-          const obj = await fetchJson(url);
-          const relationships = obj?.metadata?.relationships || [];
-          return this.getRelationships(relationships);
-        },
-  
-        async fetchLinkedResources() {
-          // This is a backup method that tries to fetch the full resource and read relationships from metadata
-          try {
-            this.isLoading = true;
-            this.errorMessage = '';
-            
-            this.referredToByResources = [];
-            this.refersToResources = [];
-            
-            const selfLink =
-                  this.resource?.links?.self ||
-                  window.location.href;
-  
-            let url = buildApiUrlFromSelfLink(selfLink, {
-                  exclude: 'metadata.managedFields',
-              });
-               if (!url) {
-                   const link = getApiUrlFromBrowserUrl(window.location.href);
-                   if (link) {
-                       url = link.includes('?') ? link : link + '?exclude=metadata.managedFields';
-                   }
-              }
-  
-            if (!url) {
-              throw new Error('Resource has no links.self or url; cannot build API URL reliably.');
+
+          if (!url) {
+            const link = getApiUrlFromBrowserUrl(window.location.href);
+            if (link) {
+              url = link.includes('?') ? link : `${ link }?exclude=metadata.managedFields`;
             }
-            
-            const obj = await fetchJson(url);
-            const { referredToBy, refersTo } = await this.getRelationshipsFromObj(obj);
-            console.debug('Fetched relationships:', { referredToBy, refersTo });
-            this.referredToByResources = referredToBy;
-            this.refersToResources = refersTo;
-          } catch (e) {
-            console.error('Error fetching linked resources:', e);
-            this.errorMessage = e?.message || 'Failed to fetch linked resources.';
-            this.referredToByResources = [];
-            this.refersToResources = [];
-          } finally {
-            this.isLoading = false;
           }
+
+          if (!url) {
+            throw new Error('Resource has no links.self or url; cannot build API URL reliably.');
+          }
+
+          return fetchJson(url);
         },
   
-        async loadLinkedResourcesFromRelationships() {
+        async loadLinkedResources() {
           try {
             this.isLoading = true;
             this.errorMessage = '';
+            this.referredToByResources = [];
+            this.refersToResources = [];
   
-            const relationships = this.resource?.metadata?.relationships || [];
+            const obj = await this.fetchResourceFromApi();
+            const relationships = obj?.metadata?.relationships || [];
             const { referredToBy, refersTo } = this.getRelationships(relationships);
-            if (referredToBy.length === 0 && refersTo.length === 0) {
-              console.debug('No relationships found in metadata, falling back to fetch method');
-              await this.fetchLinkedResources();
-              return;
-            }
   
             this.referredToByResources = referredToBy;
             this.refersToResources = refersTo;
@@ -272,14 +220,32 @@
               referredToBy: this.referredToByResources.length,
               refersTo: this.refersToResources.length,
             });
-            console.debug('Parsed relationships from metadata:', { referredToBy, refersTo });
+            console.debug('Loaded linked resources:', { referredToBy, refersTo });
           } catch (e) {
-            this.errorMessage = e?.message || 'Failed to read linked resources.';
+            this.errorMessage = e?.message || 'Failed to fetch linked resources.';
             this.referredToByResources = [];
             this.refersToResources = [];
           } finally {
             this.isLoading = false;
           }
+        },
+
+        parseResourceId(rawId) {
+          if (!rawId) {
+            return { namespace: undefined, name: '' };
+          }
+
+          const raw = String(rawId);
+          const parts = raw.split('/');
+
+          if (parts.length <= 1) {
+            return { namespace: undefined, name: raw };
+          }
+
+          return {
+            namespace: parts[0],
+            name: parts.slice(1).join('/'),
+          };
         },
   
         mapResourcesToRows(resources) {
@@ -294,21 +260,16 @@
             let name = r.name;
   
             if (!name) {
-              const raw = String(id);
-              if (raw.includes('/')) {
-                const parts = raw.split('/');
-                namespace = namespace || parts[0];
-                name = parts.slice(1).join('/');
-              } else {
-                name = raw;
-              }
+              const parsed = this.parseResourceId(id);
+              namespace = namespace || parsed.namespace;
+              name = parsed.name;
             }
   
             // Try to find the actual resource in the store (no network if already cached)
             const inStoreState = this.$store.getters[`${inStore}/byId`](type, id)?.state;
   
             const finalState = r.state || inStoreState || STATES_ENUM.MISSING;
-            const stateColor = colorForState(finalState, r.error, r.transitioning);
+            const stateColor = typeof colorForState === 'function' ? colorForState(finalState, r.error, r.transitioning) : 'text-info';
   
             const schema = this.$store.getters[`${inStore}/schemaFor`](type);
             const typeDisplay = schema ? this.$store.getters['type-map/labelFor'](schema) : type;
@@ -340,7 +301,7 @@
   
               // state badge
               state: finalState,
-              stateDisplay: stateDisplayFn(finalState),
+              stateDisplay: typeof stateDisplayFn === 'function' ? stateDisplayFn(finalState) : String(finalState),
               stateBackground: stateColor.replace('text-', 'bg-'),
   
               // misc
@@ -367,8 +328,7 @@
 
             // "Referred To By" == things that point *to* this resource => relationship has from*
             if (r.fromId && r.fromType) {
-            const raw = String(r.fromId);
-            const [namespace, name] = raw.includes('/') ? raw.split('/', 2) : [undefined, raw];
+            const { namespace, name } = this.parseResourceId(r.fromId);
 
             referredToBy.push({
                 ...common,
@@ -382,8 +342,7 @@
 
             // "Refers To" == things this resource points to => relationship has to*
             if (r.toId && r.toType) {
-            const raw = String(r.toId);
-            const [namespace, name] = raw.includes('/') ? raw.split('/', 2) : [undefined, raw];
+            const { namespace, name } = this.parseResourceId(r.toId);
 
             refersTo.push({
                 ...common,

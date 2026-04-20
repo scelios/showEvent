@@ -1,19 +1,14 @@
-import { buildApiUrlFromSelfLink, getApiUrlFromBrowserUrl } from '../../components/apiUrlHelpers';
+import { buildApiUrlFromSelfLink, getApiUrlFromBrowserUrl } from '../../../../helper/apiUrlHelpers.js';
 
 describe('apiUrlHelpers.js', () => {
-  // Save original window.location
-  const originalLocation = window.location;
-
-  beforeAll(() => {
-    delete window.location;
-    window.location = {
-      href: 'http://localhost:8080/dashboard/c/local/explorer/pod/default/mypod',
-      origin: 'http://localhost:8080',
-    };
+  beforeEach(() => {
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  afterAll(() => {
-    window.location = originalLocation;
+  afterEach(() => {
+    console.warn.mockRestore();
+    console.error.mockRestore();
   });
 
   describe('getApiUrlFromBrowserUrl', () => {
@@ -43,13 +38,11 @@ describe('apiUrlHelpers.js', () => {
 
     it('returns null on garbage URL', () => {
       const input = 'garbage-data';
-      global.console.warn = jest.fn(); // suppress console.warn
       expect(getApiUrlFromBrowserUrl(input)).toBe(null);
     });
 
     it('returns null on URL without proper Rancher structure', () => {
       const input = 'https://google.com/search?q=rancher';
-      global.console.warn = jest.fn(); 
       expect(getApiUrlFromBrowserUrl(input)).toBe(null);
     });
   });

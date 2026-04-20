@@ -48,6 +48,17 @@
               @count="onEventCount"
             />
           </Tab>
+
+          <Tab
+            name="tickets"
+            :label="`Tickets${ticketCount ? ` (${ticketCount})` : ''}`"
+            :weight="3"
+          >
+            <tickets
+              :resource="resource"
+              @count="onTicketCount"
+            />
+          </Tab>
         </Tabbed>
       </div>
     </transition>
@@ -59,11 +70,12 @@ import Tabbed from '@shell/components/Tabbed/index.vue';
 import Tab from '@shell/components/Tabbed/Tab.vue';
 import LinkedResourcesCore from './linkedressources.vue';
 import showEventRancher from './showEventRancher.vue';
+import tickets from '../../ticket/components/tickets.vue';
 
 
 export default {
   name: 'LinkedResourcesPanelWithTabs',
-  components: { Tabbed, Tab, LinkedResourcesCore, showEventRancher },
+  components: { Tabbed, Tab, LinkedResourcesCore, showEventRancher, tickets },
 
   props: {
     resource: { type: Object, required: false, default: null }
@@ -74,6 +86,7 @@ export default {
       open: false,
       linkedCount: 0,
       eventCount: 0,
+      ticketCount: 0,
       isHidden: false,
     };
   },
@@ -98,6 +111,10 @@ export default {
 
     onEventCount(count) {
       this.eventCount = count || 0;
+    },
+
+    onTicketCount(count) {
+      this.ticketCount = count || 0;
     },
 
     detectNativeTabs() {

@@ -22,89 +22,8 @@ PODMAN_CONTAINER="false"
 UPDATE_OLD_PACKAGES="true"
 UPDATE_LATEST_PACAKGES="true"
 
-REMOTE_ORIGIN_URL=$(git config --get remote.origin.url)
 GITHUB_SOURCE=$(git config --get remote.origin.url | sed -e 's/^git@.*:\([[:graph:]]*\).git/\1/')
 GITHUB_BRANCH="main"
-
-strip_git_suffix() {
-  echo "${1}" | sed -E 's/\.git$//'
-}
-
-source_to_repo_path() {
-  local source
-  source="$(strip_git_suffix "${1}")"
-
-  if [[ "${source}" =~ ^https?:// ]]; then
-    echo "${source}" | sed -E 's#^https?://[^/]+/##' | sed -E 's#^/+##'
-    return
-  fi
-
-  if [[ "${source}" =~ ^[^@]+@[^:]+:.+$ ]]; then
-    echo "${source}" | sed -E 's#^[^@]+@[^:]+:##' | sed -E 's#^/+##'
-    return
-  fi
-
-  echo "${source}" | sed -E 's#^/+##'
-}
-
-source_to_server_base() {
-  local source
-  source="${1}"
-
-  if [[ "${source}" =~ ^https?:// ]]; then
-    echo "${source}" | sed -E 's#^(https?://[^/]+).*$#\1#'
-    return
-  fi
-
-  if [[ "${source}" =~ ^[^@]+@([^:]+):.+$ ]]; then
-    echo "https://${BASH_REMATCH[1]}"
-    return
-  fi
-
-  echo ""
-}
-
-is_gitlab_source() {
-  local source repo_path origin
-  source="${1}"
-  repo_path="${2}"
-  origin="${3}"
-
-  if [[ "${source}" == *gitlab* ]] || [[ "${origin}" == *gitlab* ]] || [[ "${repo_path}" == *"/projects/"* ]]; then
-    return 0
-  fi
-
-  return 1
-}
-
-build_remote_file_url() {
-  local source branch file_path repo_path origin_base source_base server_base encoded_project encoded_file encoded_branch
-  source="${1}"
-  branch="${2}"
-  file_path="${3}"
-
-  repo_path="$(source_to_repo_path "${source}")"
-
-  if [[ -z "${repo_path}" ]]; then
-    echo ""
-    return
-  fi
-
-  origin_base="$(source_to_server_base "${REMOTE_ORIGIN_URL}")"
-  source_base="$(source_to_server_base "${source}")"
-  server_base="${source_base:-${origin_base}}"
-
-  if is_gitlab_source "${source}" "${repo_path}" "${REMOTE_ORIGIN_URL}"; then
-    encoded_project=$(printf '%s' "${repo_path}" | jq -sRr @uri)
-    encoded_file=$(printf '%s' "${file_path}" | jq -sRr @uri)
-    encoded_branch=$(printf '%s' "${branch}" | jq -sRr @uri)
-
-    echo "${server_base}/api/v4/projects/${encoded_project}/repository/files/${encoded_file}/raw?ref=${encoded_branch}"
-    return
-  fi
-
-  echo "https://raw.githubusercontent.com/${repo_path}/${branch}/${file_path}"
-}
 
 usage() {
   echo "Usage: $0 [<options>] [extensions]"
@@ -465,7 +384,6 @@ if [ "${UPDATE_LATEST_PACAKGES}" = "true" ]; then
       export BASE_EXT
       export GITHUB_SOURCE
       export GITHUB_BRANCH
-      export REMOTE_ORIGIN_URL
 
       # Additional patches
       ${SCRIPT_DIR}/helmpatch ${CHART_FOLDER} "${BASE_DIR}/pkg/${pkg}/package.json"
@@ -491,12 +409,9 @@ if [ "${BUILT}" == "true" ]; then
     UPDATE="--merge ${HELM_INDEX}"
   elif [ "${GITHUB_BUILD}" == "true" ] && [[ -n ${GITHUB_SOURCE} ]]; then
     # Check if git branch contains index.yaml
-    INDEX_URL=$(build_remote_file_url "${GITHUB_SOURCE}" "${GITHUB_BRANCH}" "index.yaml")
+    GITHUB_SOURCE=$(echo -e "${GITHUB_SOURCE}" | sed 's/https:\/\///g')
 
-    if [[ -n "${INDEX_URL}" ]]; then
-      wget -O ${BASE_DIR}/index.yaml "${INDEX_URL}" 2>/dev/null
-    fi
-
+    wget -P ${BASE_DIR} https://raw.githubusercontent.com/${GITHUB_SOURCE}/${GITHUB_BRANCH}/index.yaml 2>/dev/null
     HELM_INDEX="${BASE_DIR}/index.yaml"
 
     if [ -f "${HELM_INDEX}" ]; then
@@ -528,7 +443,7 @@ fi
 
 if [ -f ${ROOT_INDEX} ] && [ "${GITHUB_BUILD}" == "false" ]; then
   UPDATE="--merge ${ROOT_INDEX}"
-  helm repo index ${ASSETS} ${UPDATE}
+  helm repo index ${ASSETS} --url ${RELATIVE_URL} ${UPDATE}
 fi
 
 if [ -f ${ASSETS}/index.yaml ] && ! [ -e "${ROOT_INDEX}" ]; then
