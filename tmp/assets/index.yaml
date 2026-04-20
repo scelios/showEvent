@@ -12,9 +12,9 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-04-20T08:55:41.597584958+02:00"
+    created: "2026-04-20T09:02:24.644437777+02:00"
     description: launchtest plugin
-    digest: ca892f782a61345ddef14fa08a263487ef6c1f6cc773b4ccc9bb4b6044aee6fb
+    digest: ea95c5187b07bd7a33581750ae5dbfd6e07f76854f4b33a1788c827c0df24cb3
     name: launchtest
     type: application
     urls:
@@ -32,9 +32,9 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-04-20T08:55:41.597750312+02:00"
+    created: "2026-04-20T09:02:24.644890992+02:00"
     description: Help you show linked resources and their events in an easy way.
-    digest: b26c1bd10ceb8eb157805fdeca470e9e8438752e45bc34c73b1856c1560c441b
+    digest: bcb2fdd7397c276ad361947ae6356353cff2c3e46c54ef02a296faae5b164ab2
     icon: https://www.svgrepo.com/show/530400/browse.svg
     name: linkedressources
     type: application
@@ -53,9 +53,9 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-04-20T08:55:41.597932876+02:00"
+    created: "2026-04-20T09:02:24.645711728+02:00"
     description: Put your profile picture in Rancher UI.
-    digest: 590e0d1da0be15aef19fa28a6186433ea7b638da4a31099c5c29afd4b17d2448
+    digest: 548dcb0b0a89c0dbae8c101eb70e0ef0750ddba689fbfc03f22aad8ae8a203ec
     icon: https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/core-gradient-free/interface-essential/interface-essential/user-circle-single-nbls2m428grsftbflv1sh.png?_a=DATAiZAAZAA0
     name: profilepictures
     type: application
@@ -74,9 +74,9 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.1
-    created: "2026-04-20T08:55:41.598126305+02:00"
+    created: "2026-04-20T09:02:24.646027517+02:00"
     description: Help you see easily the events of a resource
-    digest: 8698093ecc59a9e4c785456f3d9e47cd77595e3ba962a7289fec1b7cbd27b64b
+    digest: d780c7029d07f8c74a3cff8d918b861710f41941884a3ac82fa31cc59281c2f8
     icon: https://www.svgrepo.com/show/530400/browse.svg
     name: showevent
     type: application
@@ -95,12 +95,12 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 3.0.0 < 4.0.0'
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-04-20T08:55:41.598302885+02:00"
+    created: "2026-04-20T09:02:24.646382445+02:00"
     description: ticket plugin
-    digest: 724605a96a4127927177e9b963779c7fcf753eab2734ce827f6c530816cfe8bf
+    digest: c4fd145c166dbe132cd15efd7656b3438d64effc968b1dccf65883e74878bfb1
     name: ticket
     type: application
     urls:
     - assets/ticket/ticket-0.1.0.tgz
     version: 0.1.0
-generated: "2026-04-20T08:55:41.597179192+02:00"
+generated: "2026-04-20T09:02:24.642829067+02:00"

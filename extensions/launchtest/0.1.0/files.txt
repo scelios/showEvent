@@ -1,0 +1,10 @@
+plugin/img/harvester.20240f8a.png
+plugin/launchtest-0.1.0.umd.min.10.js
+plugin/launchtest-0.1.0.umd.min.10.js.map
+plugin/launchtest-0.1.0.umd.min.232.js
+plugin/launchtest-0.1.0.umd.min.232.js.map
+plugin/launchtest-0.1.0.umd.min.60.js
+plugin/launchtest-0.1.0.umd.min.60.js.map
+plugin/launchtest-0.1.0.umd.min.js
+plugin/launchtest-0.1.0.umd.min.js.map
+plugin/package.json

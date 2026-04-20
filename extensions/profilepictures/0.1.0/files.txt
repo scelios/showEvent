@@ -1,3 +1,4 @@
+plugin/img/User-Circle.7eb0c38a.svg
 plugin/package.json
 plugin/profilepictures-0.1.0.umd.min.js
 plugin/profilepictures-0.1.0.umd.min.js.map

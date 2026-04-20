@@ -1,8 +1,9 @@
 {
   "name": "linkedressources",
-  "description": "linkedressources plugin",
+  "description": "Help you show linked resources and their events in an easy way.",
   "version": "0.1.0",
   "private": false,
+  "icon": "https://www.svgrepo.com/show/530400/browse.svg",
   "rancher": true,
   "engines": {
     "node": ">=16"
